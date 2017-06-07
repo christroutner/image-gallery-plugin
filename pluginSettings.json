@@ -1,0 +1,21 @@
+{
+
+  "pluginDirName": "image-gallery-plugin",
+
+  "backboneTemplateFiles": ["connextcms/templates/imageGalleryTemplate.html"],
+  "backboneViewFiles": ["connextcms/views/imageGalleryView.js"],
+  "backboneModelFiles": ["connextcms/models/exampleBackboneModel.js"],
+  "backboneCollectionFiles": ["connextcms/models/exampleBackboneCollection.js"],
+  
+  "backboneViewNames": ["ImageGalleryView"],
+  "backboneModelNames": ["ExampleModel"],
+  "backboneCollectionNames": ["ExampleCollection"],
+  
+  "primaryViewInstance": "imageGalleryView",
+  "primaryViewConstructor": "ImageGalleryView",
+  "primaryViewId": "image-gallery-link",
+  "primaryViewLabel": "Image Gallery",
+  "primaryViewFAIcon": "fa-th-large"
+
+}
+
