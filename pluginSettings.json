@@ -2,14 +2,14 @@
 
   "pluginDirName": "image-gallery-plugin",
 
-  "backboneTemplateFiles": ["connextcms/templates/imageGalleryTemplate.html"],
-  "backboneViewFiles": ["connextcms/views/imageGalleryView.js"],
-  "backboneModelFiles": ["connextcms/models/exampleBackboneModel.js"],
-  "backboneCollectionFiles": ["connextcms/models/exampleBackboneCollection.js"],
+  "backboneTemplateFiles": ["connextcms/templates/imageGalleryTemplate.html", "connextcms/templates/imageGalleryEditor.html"],
+  "backboneViewFiles": ["connextcms/views/imageGalleryView.js", "connextcms/views/imageGalleryEditorView.js"],
+  "backboneModelFiles": ["connextcms/models/imageGalleryBackboneModel.js"],
+  "backboneCollectionFiles": ["connextcms/models/imageGalleryBackboneCollection.js"],
   
-  "backboneViewNames": ["ImageGalleryView"],
-  "backboneModelNames": ["ExampleModel"],
-  "backboneCollectionNames": ["ExampleCollection"],
+  "backboneViewNames": ["ImageGalleryView", "ImageGalleryEditorView"],
+  "backboneModelNames": ["ImageGalleryModel"],
+  "backboneCollectionNames": ["ImageGalleryCollection"],
   
   "primaryViewInstance": "imageGalleryView",
   "primaryViewConstructor": "ImageGalleryView",

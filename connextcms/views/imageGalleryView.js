@@ -1,3 +1,5 @@
+//Image Gallery Plugin: imageGalleryView.js
+
 //The image gallery plugin makes extensive use of the global.thumbnailImageCollection object. 
 //This object is a Backbone Collection that stores imageUpload Models that are thumbnails only. 
 //Each model contain links to the parent images in the global.imageUploadCollection object, 
@@ -5,17 +7,6 @@
 //thumbnailImageCollection is defined in ConnextCMS Core imageLibraryView.js/getThumbnailImageCollection().
 
 //debugger;
-
-
-//Get a local copy of the JSON settings for this plugin.
-//Loop through all the loaded plugins until we find the one matches this plugin.
-//Copy the JSON data for this plugin into local variable pluginData.
-for(var i=0; i < global.pluginView.pluginData.length; i++) {
-  var pluginData = global.pluginView.pluginData[i];
-  if(pluginData.pluginDirName == 'image-gallery-plugin') {
-    break;
-  }
-}
 
 //'use strict'; //Causes error trying to import ExampleView1 object into ConnextCMS.
 
@@ -36,13 +27,16 @@ var ImageGalleryView = Backbone.View.extend({
   },
 
   initialize: function () {
-    debugger;
+    //debugger;
     
     //Load the plugin metdata as a local variables.
     this.pluginData = this.options.pluginData;
     
     //Load a handle to the plugin constructs as a local variable.
     this.pluginHandle = this.options.pluginHandle;
+    
+    //Declare the view Constructor name. Needed to distinguish between views and to identify the primary view.
+    this.viewName = "ImageGalleryView";
     
     var thisView = this; //Maitain scope inside the AJAX handler.
     
@@ -63,14 +57,20 @@ var ImageGalleryView = Backbone.View.extend({
   },
 
   render: function () {
-    //debugger;
+    debugger;
     
     //Hide all views.
     global.leftMenuView.hideAll();
     
+    
+    
     //Render this view
     this.$el.html(this.template);    
     this.$el.show();
+    
+    //Create a div and rende the editor.
+    this.$el.prepend('<div id="imageGalleryEditorDiv"></div>');
+    this.pluginHandle.views[1].render();
     
     //Visually update the left menu to inidicate that this plugin view was selected.
     this.updateLeftMenuView();
@@ -79,7 +79,7 @@ var ImageGalleryView = Backbone.View.extend({
     this.loadData();
     
     //Hide the delete button on the scaffolding template.
-    this.$el.find('#pluginScaffold').find('.delBtn').hide();
+    //this.$el.find('#pluginScaffold').find('.delBtn').hide();
     
     return this;
   },
@@ -106,11 +106,13 @@ var ImageGalleryView = Backbone.View.extend({
   
   //This function is called by render(). It populates the View with Model data retrieved from the Collection.
   loadData: function() {
-    //debugger;
+    debugger;
     
     var scaffoldElem = this.$el.find('#pluginScaffold');
     
     var thisCollection = this.pluginHandle.collections[0];
+    
+    return;
     
     //Loop through all the Models in the Collection.
     for(var i=0; i < thisCollection.models.length; i++) {
