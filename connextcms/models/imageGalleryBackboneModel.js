@@ -27,7 +27,20 @@ var ImageGalleryModel = Backbone.Model.extend({
 
   defaults: {
     '_id': '',
-    'entry': '',
+    'altTag': '',
+    'attributes': '',
+    'height': -1,
+    'width': -1,
+    'imageName': '',
+    'parentGUID': '',
+    'thumbnailGUID': '',
+    'urlThumbnail': '',
+    'urlParent': '',
+    'title': '',
+    'content1': '',
+    'content2': '',
+    'content3': '',
+    'content4': ''
   },
 
   //Override the default Backbone save() function with one that our API understands.

@@ -17,7 +17,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
 
   // The DOM events specific to an item.
   events: {
-
+    'click #addImage': 'addImage',
+    'click #allDetails': 'showAllDetails'
   },
 
   initialize: function () {
@@ -31,6 +32,10 @@ var ImageGalleryEditorView = Backbone.View.extend({
     
     //Declare the view constructor name. Needed to distinguish between views and to identify the primary view.
     this.viewName = "ImageGalleryEditorView";
+    
+    //Initialize the selectedGUID. This contains the GUID of the model that we're current working with.
+    this.selectedGUID = "";
+    
     
     var thisView = this; //Maitain scope inside the AJAX handler.
     
@@ -51,7 +56,7 @@ var ImageGalleryEditorView = Backbone.View.extend({
   },
 
   render: function () {
-    debugger;
+    //debugger;
     
     //Hide all views.
     //global.leftMenuView.hideAll();
@@ -73,7 +78,108 @@ var ImageGalleryEditorView = Backbone.View.extend({
     return this;
   },
 
+  addImage: function() {
+    debugger;
+    
+    //Clear the selectedGUID.
+    this.selectedGUID = "";
+    
+    //Re-render the view.
+    this.render();
+    
+    //Show the view.
+    this.$el.find('#editorRow').show();
+  },
   
+  editImage: function(event) {
+    debugger;
+    
+    //Retrieve the image thumnbnail GUID from the event data.
+    var GUID = event.data[0];
+    if((GUID == undefined) || (GUID == ""))
+      return;
+    
+    var thisView = event.data[1];
+    var thisModel = thisView.pluginHandle.collections[0].get(GUID);
+    
+    var editor = thisView.$el.find('#editorRow');
+    
+    editor.find('#selectedImage').attr('src', thisModel.get('urlThumbnail'));
+    
+    //editor.find('#allDetails').click([GUID, thisView], thisView.showAllDetails);
+    thisView.selectedGUID = GUID;
+    
+    editor.show();
+  },
+  
+  showAllDetails: function() {
+    debugger;
+    
+    var alreadyRendered = false;
+    
+    var thisModel = this.pluginHandle.collections[0].get(this.selectedGUID);
+    
+    var allDetailsLink = this.$el.find('#allDetails');
+    if(allDetailsLink.text() == 'Hide All Details') {
+      allDetailsLink.text('View All Details');
+      this.$el.find('ul').slideUp();
+      
+    } else {
+      allDetailsLink.text('Hide All Details');
+
+      if(!alreadyRendered) {
+      
+        //Height
+        var tmpElem = this.$el.find('#scaffoldLi').clone();
+        tmpElem.attr('id', '');
+        tmpElem.text('Height: '+thisModel.get('height')+'px');
+        this.$el.find('ul').append(tmpElem);
+
+        //Width
+        var tmpElem = this.$el.find('#scaffoldLi').clone();
+        tmpElem.attr('id', '');
+        tmpElem.text('Width: '+thisModel.get('width')+'px');
+        this.$el.find('ul').append(tmpElem);
+
+        //imgName
+        var tmpElem = this.$el.find('#scaffoldLi').clone();
+        tmpElem.attr('id', '');
+        tmpElem.text('Image Name: '+thisModel.get('imageName'));
+        this.$el.find('ul').append(tmpElem);
+
+        //Thumbnail GUID
+        var tmpElem = this.$el.find('#scaffoldLi').clone();
+        tmpElem.attr('id', '');
+        tmpElem.text('Thumbnail GUID: '+thisModel.get('thumbnailGUID'));
+        this.$el.find('ul').append(tmpElem);
+
+        //Thumbnail URL
+        var tmpElem = this.$el.find('#scaffoldLi').clone();
+        tmpElem.attr('id', '');
+        tmpElem.html('<li>Thumbnail URL: <a href="'+thisModel.get('urlThumbnail')+'" target="_blank">'+thisModel.get('urlThumbnail')+'</a></li>');
+        this.$el.find('ul').append(tmpElem);
+
+        //Parent GUID
+        var tmpElem = this.$el.find('#scaffoldLi').clone();
+        tmpElem.attr('id', '');
+        tmpElem.text('Parent GUID: '+thisModel.get('parentGUID'));
+        this.$el.find('ul').append(tmpElem);
+
+        //Parent URL
+        var tmpElem = this.$el.find('#scaffoldLi').clone();
+        tmpElem.attr('id', '');
+        tmpElem.html('<li>Parent URL: <a href="'+thisModel.get('urlParent')+'" target="_blank">'+thisModel.get('urlParent')+'</a></li>');
+        this.$el.find('ul').append(tmpElem);
+        
+        alreadyRendered = true;
+      }
+
+
+      this.$el.find('#scaffoldLi').hide();
+      this.$el.find('ul').slideDown();
+      
+    }
+  }
 
 
 });

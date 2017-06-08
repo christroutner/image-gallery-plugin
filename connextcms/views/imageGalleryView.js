@@ -57,12 +57,10 @@ var ImageGalleryView = Backbone.View.extend({
   },
 
   render: function () {
-    debugger;
+    //debugger;
     
     //Hide all views.
     global.leftMenuView.hideAll();
-    
-    
     
     //Render this view
     this.$el.html(this.template);    
@@ -70,7 +68,7 @@ var ImageGalleryView = Backbone.View.extend({
     
     //Create a div and rende the editor.
     this.$el.prepend('<div id="imageGalleryEditorDiv"></div>');
-    this.pluginHandle.views[1].render();
+    this.pluginHandle.viewHandles.ImageGalleryEditorView.render();
     
     //Visually update the left menu to inidicate that this plugin view was selected.
     this.updateLeftMenuView();
@@ -106,175 +104,55 @@ var ImageGalleryView = Backbone.View.extend({
   
   //This function is called by render(). It populates the View with Model data retrieved from the Collection.
   loadData: function() {
-    debugger;
+    //debugger;
     
-    var scaffoldElem = this.$el.find('#pluginScaffold');
-    
+    //Handles
+    var scaffoldElem = this.$el.find('#galleryScaffold');
     var thisCollection = this.pluginHandle.collections[0];
     
-    return;
+    var imgCnt = 0;
+    
+    //Clone the scaffolding element      
+    var tmpElem = scaffoldElem.clone();
+    tmpElem.attr('id', '');
     
     //Loop through all the Models in the Collection.
     for(var i=0; i < thisCollection.models.length; i++) {
-      //var thisModel = global.exampleCollection.models[i];
+    
       var thisModel = thisCollection.models[i];
       
-      //Clone the scaffolding element      
-      var tmpElem = scaffoldElem.clone();
-      tmpElem.attr('id', 'model'+i);
+      //Get the thumbnail image URL.
+      var thumbUrl = thisModel.get('urlThumbnail');
+      if(thumbUrl == '')
+        thumbUrl = "http://via.placeholder.com/300x300";
       
       //Populate the cloned element with information from the model
-      tmpElem.find('.control-label').text('String '+i);
-      tmpElem.find('.strInput').val(thisModel.get('entry'));
-      tmpElem.find('.addBtn').text('Update');
+      tmpElem.find('.img'+imgCnt).attr('src', thumbUrl);
       
-      //Add click functions tot he cloned element.
-      tmpElem.find('.addBtn').click([i], this.updateModel);
-      tmpElem.find('.delBtn').click([i], this.delModel);
+      //Add a click handler to image.
+      tmpElem.find('.img'+imgCnt).click([thisModel.id, this.pluginHandle.viewHandles.ImageGalleryEditorView],this.pluginHandle.viewHandles.ImageGalleryEditorView.editImage);
       
-      //Add the cloned element to the DOM.
-      this.$el.find('.form-horizontal').prepend(tmpElem);
-    }
-    
-    //Add a click event to the scaffolding element.
-    scaffoldElem.find('.addBtn').click(this.addStr);
-  },
-  
-  //This function is called whenever the user clicks on the 'Update' button next to a model listing.
-  updateModel: function(event) {
-    //debugger;
-    
-    var thisPlugin = global.pluginView.getHandle('plugin-template-connextcms');
-    if(!thisPlugin) {
-      console.error('Could not find plugin that matches: '+'plugin-template-connextcms');
-      return;
-    }
-    
-    var thisCollection = thisPlugin.collections[0];
-    
-    //Get a handle on the selected model.
-    var modelIndex = event.data[0];
-    var thisModel = thisCollection.models[modelIndex];
-    var thisModelId = thisModel.get('_id');
-    
-    //Get a handle on this view.
-    var thisView = thisPlugin.views[0];
-    
-    //This is a corner case where there are no entries in the DB.
-    if(thisModelId == "") {
-      thisView.addStr();
-      
-    //Default behavior.
-    } else {
-      //Retrieve the updated string.
-      var newStr = thisView.$el.find('#model'+modelIndex).find('.strInput').val();
-      thisModel.set('entry', newStr);
-
-      //Persist the updated model to the server.
-      thisModel.refreshView = true;
-      thisModel.save();
-    }
-    
-   
-    
-  },
-  
-  //This function is called whenever the user clicks ont he 'Delete' button next to a model listing.
-  delModel: function(event) {
-    //debugger;
-    
-    var thisPlugin = global.pluginView.getHandle('plugin-template-connextcms');
-    if(!thisPlugin) {
-      console.error('Could not find plugin that matches: '+'plugin-template-connextcms');
-      return;
-    }
-    
-    var thisCollection = thisPlugin.collections[0];
-    
-    //Get a handle on the selected model.
-    var modelIndex = event.data[0];
-    var thisModel = thisCollection.models[modelIndex];
-    var thisModelId = thisModel.get('_id');
-    
-    //Delete the model on the server.
-    $.get('/api/exampleplugin/'+thisModelId+'/remove', '', function(data) {
-      //debugger;
-      
-      //Error Handling.
-      if(!data.success) {
-        console.error('Error deleting example plugin model '+thisModelId);
-        return;
+      imgCnt++;
+      if(imgCnt > 3) {
+        imgCnt = 0;
+        
+        //Add the cloned row to the DOM.
+        this.$el.append(tmpElem);
+        
+        //Clone a new image row
+        var tmpElem = scaffoldElem.clone();
+        tmpElem.attr('id', '');
       }
-      
-      //Refresh the Collection and View.
-      thisCollection.refreshView = true;
-      thisCollection.fetch();
-      
-    })
-    .fail(function( jqxhr, textStatus, error ) {
-      debugger;
-      
-      try {
-        if(jqxhr.responseJSON.detail == "invalid csrf") {
-          global.modalView.errorModal('Update failed due to a bad CSRF token. Please log out and back in to refresh your CSRF token.');
-          return;
-        } else {
-          global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
-          console.log( "Request Failed: " + error );
-          console.error('Error message: '+jqxhr.responseText);
-        }
-      } catch(err) {
-        console.error('Error trying to retrieve JSON data from server response.');
-      } 
-    });
-  },
-  
-  //This function is called when the user clicks the 'Add' button next to the scaffolding element.
-  addStr: function() {
-    //debugger;
-    
-    var thisPlugin = global.pluginView.getHandle('plugin-template-connextcms');
-    if(!thisPlugin) {
-      console.error('Could not find plugin that matches: '+'plugin-template-connextcms');
-      return;
     }
     
-    //Get a handle on this view.
-    var thisView = thisPlugin.views[0];
+    //Add the last cloned element to the DOM.
+    //this.$el.find('.form-horizontal').prepend(tmpElem);
+    this.$el.append(tmpElem);
     
-    //Get a handle on the scaffold element
-    var scaffoldElem = thisView.$el.find('#pluginScaffold');
-    
-    //Create a new model.
-    var obj = new Object();
-    obj.entry = scaffoldElem.find('.strInput').val();
-    
-    //Submit the new model to the server.
-    $.post('/api/exampleplugin/create', obj, function(data) {
-      //debugger;
-      
-      var thisCollection = thisPlugin.collections[0];
-      
-      thisCollection.refreshView = true;
-      thisCollection.fetch();
-    })
-    .fail(function( jqxhr, textStatus, error ) {
-      debugger;
-      
-      try {
-        if(jqxhr.responseJSON.detail == "invalid csrf") {
-          global.modalView.errorModal('Update failed due to a bad CSRF token. Please log out and back in to refresh your CSRF token.');
-          return;
-        } else {
-          global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
-          console.log( "Request Failed: " + error );
-          console.error('Error message: '+jqxhr.responseText);
-        }
-      } catch(err) {
-        console.error('Error trying to retrieve JSON data from server response.');
-      } 
-    });
-  }
+    //Hide the scaffolding element.
+    scaffoldElem.hide();
+  },
+  
 
 
 });
