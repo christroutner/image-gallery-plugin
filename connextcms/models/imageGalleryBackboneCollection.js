@@ -59,7 +59,8 @@ var ImageGalleryCollection = Backbone.Collection.extend({ //Collection Class
     
     //Fetch data from the server after initializing everything.
     this.fetch();
-  }
+  },
+  
 });
 
 

@@ -18,7 +18,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
   // The DOM events specific to an item.
   events: {
     'click #addImage': 'addImage',
-    'click #allDetails': 'showAllDetails'
+    'click #allDetails': 'showAllDetails',
+    'click #selectedImage': 'launchImageLibrary'
   },
 
   initialize: function () {
@@ -78,6 +79,7 @@ var ImageGalleryEditorView = Backbone.View.extend({
     return this;
   },
 
+  //This function control the behavior of the 'Add Image' button.
   addImage: function() {
     debugger;
     
@@ -89,8 +91,12 @@ var ImageGalleryEditorView = Backbone.View.extend({
     
     //Show the view.
     this.$el.find('#editorRow').show();
+    
+    
   },
   
+  //This function is called when a user clicks on an image in the gallery. It renders the editor and loads the
+  //image data into into it.
   editImage: function(event) {
     debugger;
     
@@ -112,6 +118,7 @@ var ImageGalleryEditorView = Backbone.View.extend({
     editor.show();
   },
   
+  //This function shows the image details when the user clicks the 'View All Details' link.
   showAllDetails: function() {
     debugger;
     
@@ -179,6 +186,83 @@ var ImageGalleryEditorView = Backbone.View.extend({
       this.$el.find('ul').slideDown();
       
     }
+  },
+  
+  //This function is responsible for launching the Image Library modal when the 'selected photo' in the
+  //editor is clicked.
+  launchImageLibrary: function() {
+    debugger;
+    
+    //Launch the Image Library modal with a global reference to this View. It will call swapPhoto() on exiting.
+    global.modalView.browseImageLibrary('global.pluginView.imageGalleryView.pluginHandle.viewHandles.ImageGalleryEditorView.swapPhoto');
+  },
+  
+  //This function controls the click event on the 'selected photo', the image in the editor. It is
+  //responsible for bringing up the Image Library modal and swapping out the image and image information.
+  swapPhoto: function(retVal) {
+    debugger;
+    
+    var thisView = global.pluginView.imageGalleryView.pluginHandle.viewHandles.ImageGalleryEditorView;
+    var thisCollection = thisView.pluginHandle.collections[0];
+    
+    var selectedGUID = thisView.selectedGUID;
+    
+    //Adding a new image to the Image Gallery
+    if(selectedGUID == "") {
+      
+      try {
+        //Create a new Gallery Backbone model.
+        var newModel = new ImageGalleryModel(null, {pluginData: thisView.pluginData, pluginHandle: thisView.pluginHandle});
+
+        //Retrieve the new model data from the selected thumbnail model and parent image model.
+        var parentId = retVal.selectedImage.get('parent');
+        newModel.set('parentGUID', parentId);
+        newModel.set('thumbnailGUID', retVal.selectedImage.get('_id'));
+        newModel.set('urlThumbnail', retVal.selectedImage.get('url'));
+        var parentModel = global.parentImageCollection.get(parentId);
+        newModel.set('urlParent', parentModel.get('url'));
+        newModel.set('title', parentModel.get('imageName'));
+        newModel.set('height', parentModel.get('height'));
+        newModel.set('width', parentModel.get('width'));
+        newModel.set('imageName', parentModel.get('imageName'));
+        newModel.set('altTag', parentModel.get('alt1'));
+        newModel.set('attributes', parentModel.get('attributes1'));
+
+        //Register the model on the server.
+        newModel.createNewModelOnServer();
+
+        //Add the model to the collection
+        thisCollection.add(newModel);
+        
+        //-->Start sub-function
+        //var editor = thisView.$el.find('#editorRow');
+    
+        //editor.find('#selectedImage').attr('src', newModel.get('urlThumbnail'));
+
+        //editor.find('#allDetails').click([GUID, thisView], thisView.showAllDetails);
+        //thisView.selectedGUID = GUID;
+
+        //editor.show();
+        //-->End sub-function
+        
+        
+        
+      } catch(err) {
+        debugger;
+        
+        console.error('Error while trying to create new Image Gallery model imageGalleryEditorView.js/swapPhoto(). Error message: ');
+        console.error(err.message);
+
+        log.push('Error while trying to create new Image Gallery model imageGalleryEditorView.js/swapPhoto(). Error message: ');
+        log.push(err.message);
+        //sendLog();  //Send error log to admin.
+      }
+      
+    //Replacing a previous image.
+    } else {
+      debugger;
+    }
+    
   }
 
 

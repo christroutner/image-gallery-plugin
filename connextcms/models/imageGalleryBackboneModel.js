@@ -80,11 +80,54 @@ var ImageGalleryModel = Backbone.Model.extend({
 
       log.push('Error while trying imageGalleryBackboneModel.js/save(). Most likely due to communication issue with the server.');
       log.push('responseText: '+jqxhr.responseText);
-      //sendLog();
+      //sendLog(); //Send an error log to the admin.
       
       console.error('Communication error with server while execute imageGalleryBackboneModel.js/save()');
     });
+  },
+  
+  //This function creates a new model on the server and updates the Backbone model with the correct ID.
+  //Assumption: this function is only called by imageGalleryEditorView.js/swapPhoto().
+  createNewModelOnServer: function() {
+    
+    var thisModel = this;
+    
+    $.post('/api/imagegallery/create', this.attributes, function(data) {
+      debugger;
+      
+      var GUID = data.collection._id;
+      
+      //Set the ID assigned by the server.
+      thisModel.set('_id', GUID);
+      
+      //Since this function is only called by swapPhoto(), I can assume the view and know that I need to set the selectedGUID.
+      var thisView = global.pluginView.imageGalleryView.pluginHandle.viewHandles.ImageGalleryEditorView;
+      thisView.selectedGUID = GUID;
+      
+      //Refresh the gallery view.
+      global.pluginView.imageGalleryView.render();
+      
+      //Simulate a user click on the newly created model.
+      var event = {};
+      event.data = [];
+      event.data[0] = GUID;
+      event.data[1] = thisView;
+      thisView.editImage(event);
+      
+    })
+    .fail(function( jqxhr, textStatus, error ) {
+      debugger;
+      
+      global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
+      console.log( "Request Failed: " + error );
+      console.error('Error message: '+jqxhr.responseText);
 
+      log.push('Error while trying imageGalleryBackboneModel.js/createNewModelOnServer(). Most likely due to communication issue with the server.');
+      log.push('responseText: '+jqxhr.responseText);
+      //sendLog(); //Send an error log to the admin.
+      
+      console.error('Communication error with server while execute imageGalleryBackboneModel.js/createNewModelOnServer()');
+    });
   }
 });
 
