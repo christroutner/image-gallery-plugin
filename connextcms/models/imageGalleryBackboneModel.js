@@ -47,87 +47,151 @@ var ImageGalleryModel = Backbone.Model.extend({
   save: function() {
     //debugger;
 
-    var thisModel = this;
-    
-    $.post(this.url, this.attributes, function(data) {
-      //Regardless of success or failure, the API returns the JSON data of the model that was just updated.
-      //debugger;
-      
-      //If the refreshView flag is set, then refresh the Collection and then refresh the View.
-      if(thisModel.refreshView) {
-        
-        debugger;
-        //var thisPlugin = global.pluginView.getHandle('plugin-template-connextcms');
-        var thisPlugin = thisModel.pluginHandle;
-        //if(!thisPlugin) {
-        //  console.error('Could not find plugin that matches: '+'plugin-template-connextcms');
-        //  return;
-        //}
-        
-        thisModel.refreshView = false;
-        thisPlugin.collections[0].refreshView = true;
-        thisPlugin.collections[0].fetch(); 
-      }
-      
-      log.push('exampleBackboneModel.js/save() executed.');
-    })
-    .fail(function( jqxhr, textStatus, error ) {
-      debugger;
-      
-      global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
-      console.log( "Request Failed: " + error );
-      console.error('Error message: '+jqxhr.responseText);
+    try {
 
-      log.push('Error while trying imageGalleryBackboneModel.js/save(). Most likely due to communication issue with the server.');
-      log.push('responseText: '+jqxhr.responseText);
-      //sendLog(); //Send an error log to the admin.
+      var thisModel = this;
+
+      $.post(this.url, this.attributes, function(data) {
+        //Regardless of success or failure, the API returns the JSON data of the model that was just updated.
+        //debugger;
+
+        //If the refreshView flag is set, then refresh the Collection and then refresh the View.
+        if(thisModel.refreshView) {
+
+          debugger;
+          //var thisPlugin = global.pluginView.getHandle('plugin-template-connextcms');
+          var thisPlugin = thisModel.pluginHandle;
+          //if(!thisPlugin) {
+          //  console.error('Could not find plugin that matches: '+'plugin-template-connextcms');
+          //  return;
+          //}
+
+          thisModel.refreshView = false;
+          thisPlugin.collections[0].refreshView = true;
+          thisPlugin.collections[0].fetch(); 
+        }
+
+        log.push('exampleBackboneModel.js/save() executed.');
+      })
+      .fail(function( jqxhr, textStatus, error ) {
+        debugger;
+
+        global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
+        console.log( "Request Failed: " + error );
+        console.error('Error message: '+jqxhr.responseText);
+
+        log.push('Error while trying imageGalleryBackboneModel.js/save(). Most likely due to communication issue with the server.');
+        log.push('responseText: '+jqxhr.responseText);
+        //sendLog(); //Send an error log to the admin.
+
+        console.error('Communication error with server while execute imageGalleryBackboneModel.js/save()');
+      });
       
-      console.error('Communication error with server while execute imageGalleryBackboneModel.js/save()');
-    });
+    } catch (err) {
+      debugger;
+      var msg = 'Error while trying to update existing post in imageGalleryBackboneModel.js/save(). Error message: ';
+      console.error(msg);
+      console.error(err.message);
+
+      log.push(msg);
+      log.push(err.message);
+      //sendLog();
+    }
   },
   
   //This function creates a new model on the server and updates the Backbone model with the correct ID.
   //Assumption: this function is only called by imageGalleryEditorView.js/swapPhoto().
   createNewModelOnServer: function() {
-    
-    var thisModel = this;
-    
-    $.post('/api/imagegallery/create', this.attributes, function(data) {
-      debugger;
-      
-      var GUID = data.collection._id;
-      
-      //Set the ID assigned by the server.
-      thisModel.set('_id', GUID);
-      
-      //Since this function is only called by swapPhoto(), I can assume the view and know that I need to set the selectedGUID.
-      var thisView = global.pluginView.imageGalleryView.pluginHandle.viewHandles.ImageGalleryEditorView;
-      thisView.selectedGUID = GUID;
-      
-      //Refresh the gallery view.
-      global.pluginView.imageGalleryView.render();
-      
-      //Simulate a user click on the newly created model.
-      var event = {};
-      event.data = [];
-      event.data[0] = GUID;
-      event.data[1] = thisView;
-      thisView.editImage(event);
-      
-    })
-    .fail(function( jqxhr, textStatus, error ) {
-      debugger;
-      
-      global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
-      console.log( "Request Failed: " + error );
-      console.error('Error message: '+jqxhr.responseText);
+    try {
+      var thisModel = this;
 
-      log.push('Error while trying imageGalleryBackboneModel.js/createNewModelOnServer(). Most likely due to communication issue with the server.');
-      log.push('responseText: '+jqxhr.responseText);
-      //sendLog(); //Send an error log to the admin.
+      $.post('/api/imagegallery/create', this.attributes, function(data) {
+        //debugger;
+
+        var GUID = data.collection._id;
+
+        //Set the ID assigned by the server.
+        thisModel.set('_id', GUID);
+        thisModel.url = '/api/imagegallery/'+GUID+'/update';
+
+        //Since this function is only called by swapPhoto(), I can assume the view and know that I need to set the selectedGUID.
+        var thisView = global.pluginView.imageGalleryView.pluginHandle.viewHandles.ImageGalleryEditorView;
+        thisView.selectedGUID = GUID;
+
+        //Refresh the gallery view.
+        global.pluginView.imageGalleryView.render();
+
+        //Simulate a user click on the newly created model.
+        var event = {};
+        event.data = [];
+        event.data[0] = GUID;
+        event.data[1] = thisView;
+        thisView.editImage(event);
+
+      })
+      .fail(function( jqxhr, textStatus, error ) {
+        debugger;
+
+        global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
+        console.log( "Request Failed: " + error );
+        console.error('Error message: '+jqxhr.responseText);
+
+        log.push('Error while trying imageGalleryBackboneModel.js/createNewModelOnServer(). Most likely due to communication issue with the server.');
+        log.push('responseText: '+jqxhr.responseText);
+        //sendLog(); //Send an error log to the admin.
+
+        console.error('Communication error with server while execute imageGalleryBackboneModel.js/createNewModelOnServer()');
+      });
+    } catch (err) {
+      debugger;
+      var msg = 'Error while trying to update existing post in imageGalleryBackboneModel.js/createNewModelOnServer(). Error message: ';
+      console.error(msg);
+      console.error(err.message);
+
+      log.push(msg);
+      log.push(err.message);
+      //sendLog();
+    }
+  },
+  
+  //This function deletes the model from the server DB.
+  deleteFromServer: function() {
+    try {
+      //debugger;
+
+      $.get('/api/imagegallery/'+this.id+'/remove', this.attributes, function(data) {
+        //debugger;
+
+        if(!data.success) {
+          var msg = 'Error trying to delete Image Gallery model from server. imageGalleryBackboneModel.js/deleteFromServer()';
+          console.error(msg);
+          log.push(msg);
+        }
+      })
+      .fail(function( jqxhr, textStatus, error ) {
+        debugger;
+
+        global.modalView.errorModal("Request failed because of: "+error+'. Error Message: '+jqxhr.responseText);
+        console.log( "Request Failed: " + error );
+        console.error('Error message: '+jqxhr.responseText);
+
+        log.push('Error while trying imageGalleryBackboneModel.js/deleteFromServer(). Most likely due to communication issue with the server.');
+        log.push('responseText: '+jqxhr.responseText);
+        //sendLog(); //Send an error log to the admin.
+
+        console.error('Communication error with server while execute imageGalleryBackboneModel.js/deleteFromServer()');
+      });
       
-      console.error('Communication error with server while execute imageGalleryBackboneModel.js/createNewModelOnServer()');
-    });
+    } catch (err) {
+      debugger;
+      var msg = 'Error while trying to update existing post in imageGalleryBackboneModel.js/deleteFromServer(). Error message: ';
+      console.error(msg);
+      console.error(err.message);
+
+      log.push(msg);
+      log.push(err.message);
+      //sendLog();
+    }
   }
 });
 

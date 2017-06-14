@@ -7,12 +7,14 @@
 
 <div class="row" id="editorRow" hidden>
   <div class="col-md-6 col-sm-12" style="margin-top: 20px;">
-    <button type="button" class="btn btn-danger btn-xs pull-right"><i class="fa fa-close"></i></button>
+    <button id="deleteImageBtn" type="button" class="btn btn-danger btn-xs pull-right" data-toggle="tooltip" data-placement="top" title="Delete image from gallery">
+      <i class="fa fa-close"></i>
+    </button>
     <img src="http://via.placeholder.com/300x300" class="img-responsive center-block" id="selectedImage" />
   </div>
   
   <div class="col-md-6 col-sm-12" style="margin-top: 20px;">
-    <form class="form-horizontal">
+    <form class="form-horizontal" id="galleryContentForm">
       
       <div class="form-group">        
         <label for="imgTitle" class="col-sm-2 control-label">Title</label>
