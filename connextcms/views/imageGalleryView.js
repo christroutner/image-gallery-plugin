@@ -158,7 +158,8 @@ var ImageGalleryView = Backbone.View.extend({
       tmpElem.attr('id', '');
 
       //Loop through all the Models in the Collection.
-      for(var i=0; i < thisCollection.models.length; i++) {
+      //for(var i=0; i < thisCollection.models.length; i++) {
+      for(var i=thisCollection.models.length-1; i > -1; i--) {
 
         var thisModel = thisCollection.models[i];
 
