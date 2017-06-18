@@ -260,7 +260,7 @@ var ImageGalleryEditorView = Backbone.View.extend({
   //responsible for bringing up the Image Library modal and swapping out the image and image information.
   swapPhoto: function(retVal) {
     try {
-      debugger;
+      //debugger;
 
       var thisView = global.pluginView.imageGalleryView.pluginHandle.viewHandles.ImageGalleryEditorView;
       var thisCollection = thisView.pluginHandle.collections[0];
