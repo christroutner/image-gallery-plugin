@@ -96,6 +96,8 @@ var ImageGalleryModel = Backbone.Model.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   
@@ -139,6 +141,8 @@ var ImageGalleryModel = Backbone.Model.extend({
         log.push('Error while trying imageGalleryBackboneModel.js/createNewModelOnServer(). Most likely due to communication issue with the server.');
         log.push('responseText: '+jqxhr.responseText);
         //sendLog(); //Send an error log to the admin.
+      
+        global.modalView.errorModal(msg);
 
         console.error('Communication error with server while execute imageGalleryBackboneModel.js/createNewModelOnServer()');
       });
@@ -151,6 +155,8 @@ var ImageGalleryModel = Backbone.Model.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   
@@ -191,6 +197,8 @@ var ImageGalleryModel = Backbone.Model.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   }
 });

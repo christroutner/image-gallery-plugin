@@ -59,6 +59,8 @@ var ImageGalleryView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
 
@@ -86,7 +88,11 @@ var ImageGalleryView = Backbone.View.extend({
       //Hide the delete button on the scaffolding template.
       //this.$el.find('#pluginScaffold').find('.delBtn').hide();
 
+      //Refresh the collection in case there has been changes.
+      this.pluginHandle.collections[0].fetch();
+      
       return this;
+      
     
     } catch (err) {
       debugger;
@@ -97,6 +103,8 @@ var ImageGalleryView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
 
@@ -129,6 +137,8 @@ var ImageGalleryView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   
@@ -196,6 +206,8 @@ var ImageGalleryView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   

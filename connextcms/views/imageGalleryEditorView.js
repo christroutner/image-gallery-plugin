@@ -63,6 +63,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
 
@@ -86,6 +88,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
 
@@ -112,6 +116,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
     
   },
@@ -157,6 +163,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   
@@ -220,6 +228,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   
@@ -241,6 +251,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   
@@ -248,7 +260,7 @@ var ImageGalleryEditorView = Backbone.View.extend({
   //responsible for bringing up the Image Library modal and swapping out the image and image information.
   swapPhoto: function(retVal) {
     try {
-      //debugger;
+      debugger;
 
       var thisView = global.pluginView.imageGalleryView.pluginHandle.viewHandles.ImageGalleryEditorView;
       var thisCollection = thisView.pluginHandle.collections[0];
@@ -267,13 +279,14 @@ var ImageGalleryEditorView = Backbone.View.extend({
           newModel.set('parentGUID', parentId);
           newModel.set('thumbnailGUID', retVal.selectedImage.get('_id'));
           newModel.set('urlThumbnail', retVal.selectedImage.get('url'));
+          newModel.set('altTag', retVal.selectedImage.get('alt1'));
           var parentModel = global.parentImageCollection.get(parentId);
           newModel.set('urlParent', parentModel.get('url'));
           newModel.set('title', parentModel.get('imageName'));
           newModel.set('height', parentModel.get('height'));
           newModel.set('width', parentModel.get('width'));
           newModel.set('imageName', parentModel.get('imageName'));
-          newModel.set('altTag', parentModel.get('alt1'));
+          //newModel.set('altTag', parentModel.get('alt1'));
           newModel.set('attributes', parentModel.get('attributes1'));
 
           //Register the model on the server.
@@ -294,6 +307,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
           log.push('Error while trying to create new Image Gallery model imageGalleryEditorView.js/swapPhoto(). Error message: ');
           log.push(err.message);
           //sendLog();  //Send error log to admin.
+      
+          global.modalView.errorModal(msg);
         }
 
       //Replacing a previous image.
@@ -344,6 +359,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
     
   },
@@ -379,6 +396,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   },
   
@@ -399,7 +418,7 @@ var ImageGalleryEditorView = Backbone.View.extend({
       thisModel.set('title', this.$el.find('#imgTitle').val());
       thisModel.set('altTag', this.$el.find('#imgAlt').val());
       thisModel.set('content1', this.$el.find('#content1').val());
-      thisModel.set('content2', this.$el.find('#content1').val());
+      thisModel.set('content2', this.$el.find('#content2').val());
 
       //Persist the changes to the server.
       thisModel.save();
@@ -413,6 +432,8 @@ var ImageGalleryEditorView = Backbone.View.extend({
       log.push(msg);
       log.push(err.message);
       //sendLog();
+      
+      global.modalView.errorModal(msg);
     }
   }
 
