@@ -123,7 +123,7 @@ var ImageGalleryView = Backbone.View.extend({
         global.leftMenuView.closeCollapsableLeftMenu();
 
       //Switch the 'active' class to the selected menu item
-      $('#example1-link').addClass('active');
+      $('#image-gallery-link').addClass('active');
 
       //Update the location text.
       $('#app-location').text('Image Gallery');
