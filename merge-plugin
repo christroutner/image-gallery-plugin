@@ -2,16 +2,16 @@
 echo Preparing to copy into myCMS directory...
 
 echo Copying plugin files into /public/plugins directory
-mkdir ../myCMS/public/plugins
-cp -rf ../image-gallery-plugin ../myCMS/public/plugins/
+mkdir ~/myCMS/public/plugins
+cp -rf ~/image-gallery-plugin ~/myCMS/public/plugins/
 
 echo Copying Keystone Models
-cp keystone/models/*.js ../myCMS/models/
+cp keystone/models/*.js ~/myCMS/models/
 
 echo Copying Keystone API Routes
-cp keystone/routes/imageGalleryRouter.js ../myCMS/routes/
-cp keystone/routes/api/*.js ../myCMS/routes/api/
-cp keystone/routes/views/*.js ../myCMS/routes/views/
+cp keystone/routes/imageGalleryRouter.js ~/myCMS/routes/
+cp keystone/routes/api/*.js ~/myCMS/routes/api/
+cp keystone/routes/views/*.js ~/myCMS/routes/views/
 
 echo Copying Keystone Views
-cp keystone/templates/views/*.hbs ../myCMS/templates/views/
+cp keystone/templates/views/*.hbs ~/myCMS/templates/views/
